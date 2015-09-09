@@ -81,7 +81,7 @@ public class Nio2Server {
     private static class WriterTask implements Runnable {
         
         int bandwidthKilobits = 500;
-        int writesPerSec = 150;
+        int writesPerSec = 100;
         
         private Nio2Writer writer;
 
