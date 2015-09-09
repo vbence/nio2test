@@ -57,6 +57,10 @@ public class Nio2Writer {
             @Override
             public void completed(Integer v, Void a) {
                 
+                if (currentBuffer.capacity() != v) {
+                    System.err.println("Partial write: " + v + "/" + currentBuffer.capacity());
+                }
+                
                 /*
                 currentBuffer.position(0);
                 long serial = currentBuffer.getLong(8);
