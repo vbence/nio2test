@@ -23,8 +23,6 @@ public class Nio2Writer {
     private final Deque<ByteBuffer> buffers = new ArrayDeque<>();
     
     private boolean busy = false;
-    
-    private int packetCount = 0;
 
 
     public Nio2Writer(AsynchronousByteChannel channel) {
@@ -34,7 +32,6 @@ public class Nio2Writer {
     
     public void write(ByteBuffer buffer) {
         synchronized (buffers) {
-            packetCount++;
             buffers.addLast(buffer);
             
             if (!busy) {
@@ -48,7 +45,7 @@ public class Nio2Writer {
         final ByteBuffer currentBuffer;
         synchronized (buffers) {
             busy = true;
-            currentBuffer = buffers.removeFirst();
+            currentBuffer = buffers.peekFirst();
         }
         
         final long time = System.nanoTime();
@@ -57,8 +54,8 @@ public class Nio2Writer {
             @Override
             public void completed(Integer v, Void a) {
                 
-                if (currentBuffer.capacity() != v) {
-                    System.err.println("Partial write: " + v + "/" + currentBuffer.capacity());
+                if (currentBuffer.remaining() > 0) {
+                    writeNow();
                 }
                 
                 /*
@@ -70,7 +67,7 @@ public class Nio2Writer {
                 */
                 
                 synchronized (buffers) {
-                    packetCount--;
+                    buffers.removeFirst();
                     busy = false;
                     if (buffers.size() > 0) {
                         writeNow();
