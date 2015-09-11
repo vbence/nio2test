@@ -43,13 +43,17 @@ public class Nio2TestClient {
                 break;
             }
             dataLength += numBytes;
-            
-            int bytesProcessed = processPacket(buffer, 0, dataLength);
-            
-            if (bytesProcessed > 0) {
-                System.arraycopy(buffer, bytesProcessed, buffer, 0, dataLength - bytesProcessed);
+
+            do {
+                int bytesProcessed = processPacket(buffer, 0, dataLength);
                 dataLength -= bytesProcessed;
-            }
+
+                if (bytesProcessed > 0) {
+                    System.arraycopy(buffer, bytesProcessed, buffer, 0, dataLength);
+                } else {
+                    break;
+                }
+            } while (true);
             
         } while (true);
         
