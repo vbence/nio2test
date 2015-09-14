@@ -60,11 +60,11 @@ public class Nio2TestClient {
     }
 
     public static int processPacket(byte[] buffer, int offset, int length) {
-        ByteBuffer bb = ByteBuffer.wrap(buffer, offset, length);
-        
         if (length < 16) {
             return 0;
         }
+        
+        ByteBuffer bb = ByteBuffer.wrap(buffer, offset, length);
         
         long packetLength = bb.getLong();
         if (packetLength > length) {
