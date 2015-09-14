@@ -92,7 +92,7 @@ public class Nio2TestClient {
         okBytes += length;
         nextSerial = serial + 1;
         
-        return length;
+        return (int)packetLength;
     }
     
 }
